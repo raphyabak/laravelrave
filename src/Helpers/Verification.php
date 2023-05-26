@@ -2,7 +2,6 @@
 
 namespace KingFlamez\Rave\Helpers;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -20,14 +19,13 @@ class Verification
     /**
      * Construct
      */
-    function __construct(String $publicKey, String $secretKey, String $baseUrl)
+    public function __construct(String $publicKey, String $secretKey, String $baseUrl)
     {
 
         $this->publicKey = $publicKey;
         $this->secretKey = $secretKey;
         $this->baseUrl = $baseUrl;
     }
-
 
     /**
      * Confirm bank account
@@ -44,7 +42,6 @@ class Verification
 
         return $account;
     }
-
 
     /**
      * Verify BVN
@@ -74,6 +71,15 @@ class Verification
         return $transaction;
     }
 
+    public function transactionByTxRef($reference)
+    {
+        $transaction = Http::withToken($this->secretKey)->get(
+            $this->baseUrl . '/transactions/verify_by_reference?tx_ref=' . $reference
+        )->json();
+
+        return $transaction;
+    }
+
     /**
      * Verify Card bin
      * @param $bin
@@ -87,7 +93,5 @@ class Verification
 
         return $card;
     }
-
-
 
 }
